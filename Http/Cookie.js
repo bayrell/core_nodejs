@@ -1,14 +1,14 @@
 "use strict;"
 /*!
- *  Bayrell Runtime Library
+ *  Bayrell Core Library
  *
- *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2018-2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,11 +17,13 @@
  *  limitations under the License.
  */
 var rtl = require('bayrell-runtime-nodejs').rtl;
+var rs = require('bayrell-runtime-nodejs').rs;
 var Map = require('bayrell-runtime-nodejs').Map;
 var Dict = require('bayrell-runtime-nodejs').Dict;
 var Vector = require('bayrell-runtime-nodejs').Vector;
 var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
+var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
 var CoreStruct = require('bayrell-runtime-nodejs').CoreStruct;
 var DateTime = require('bayrell-runtime-nodejs').DateTime;
 class Cookie extends CoreStruct{
@@ -37,25 +39,27 @@ class Cookie extends CoreStruct{
 		return c.expire.getTimestamp();
 	}
 	/* ======================= Class Init Functions ======================= */
-	getClassName(){return "RuntimeUI.Http.Cookie";}
-	static getCurrentClassName(){return "RuntimeUI.Http.Cookie";}
+	getClassName(){return "Core.Http.Cookie";}
+	static getCurrentNamespace(){return "Core.Http";}
+	static getCurrentClassName(){return "Core.Http.Cookie";}
 	static getParentClassName(){return "Runtime.CoreStruct";}
 	_init(){
 		super._init();
+		var names = Object.getOwnPropertyNames(this);
 		this.__name = "";
-		Object.defineProperty(this, "name", { get: function() { return this.__name; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("name") }});
+		if (names.indexOf("name") == -1)Object.defineProperty(this, "name", { get: function() { return this.__name; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("name") }});
 		this.__value = "";
-		Object.defineProperty(this, "value", { get: function() { return this.__value; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("value") }});
+		if (names.indexOf("value") == -1)Object.defineProperty(this, "value", { get: function() { return this.__value; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("value") }});
 		this.__expire = null;
-		Object.defineProperty(this, "expire", { get: function() { return this.__expire; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("expire") }});
+		if (names.indexOf("expire") == -1)Object.defineProperty(this, "expire", { get: function() { return this.__expire; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("expire") }});
 		this.__domain = "";
-		Object.defineProperty(this, "domain", { get: function() { return this.__domain; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("domain") }});
+		if (names.indexOf("domain") == -1)Object.defineProperty(this, "domain", { get: function() { return this.__domain; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("domain") }});
 		this.__path = "";
-		Object.defineProperty(this, "path", { get: function() { return this.__path; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("path") }});
+		if (names.indexOf("path") == -1)Object.defineProperty(this, "path", { get: function() { return this.__path; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("path") }});
 		this.__secure = false;
-		Object.defineProperty(this, "secure", { get: function() { return this.__secure; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("secure") }});
+		if (names.indexOf("secure") == -1)Object.defineProperty(this, "secure", { get: function() { return this.__secure; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("secure") }});
 		this.__httponly = false;
-		Object.defineProperty(this, "httponly", { get: function() { return this.__httponly; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("httponly") }});
+		if (names.indexOf("httponly") == -1)Object.defineProperty(this, "httponly", { get: function() { return this.__httponly; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("httponly") }});
 	}
 	assignObject(obj){
 		if (obj instanceof Cookie){
@@ -103,6 +107,11 @@ class Cookie extends CoreStruct{
 		}
 	}
 	static getFieldInfoByName(field_name){
+		return null;
+	}
+	static getMethodsList(names){
+	}
+	static getMethodInfoByName(method_name){
 		return null;
 	}
 }

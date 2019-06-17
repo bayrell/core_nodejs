@@ -2,7 +2,7 @@
 /*!
  *  Bayrell Core Library
  *
- *  (c) Copyright 2018-2019 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,58 +24,54 @@ var Vector = require('bayrell-runtime-nodejs').Vector;
 var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
-var CoreObject = require('bayrell-runtime-nodejs').CoreObject;
-var RuntimeUtils = require('bayrell-runtime-nodejs').RuntimeUtils;
-var Request = require('./Request.js');
-var Response = require('./Response.js');
-class JsonResponse extends Response{
-	/**
-	 * Init struct data
-	 */
-	initData(){
-		var headers = this.headers;
-		if (headers == null){
-			headers = new Dict();
-		}
-		headers = headers.setIm("Content-Type", "application/json");
-		this.assignValue("headers", headers);
-	}
-	/**
-	 * Returns content
-	 */
-	getContent(){
-		return rtl.json_encode(this.data);
-	}
+var CoreEvent = require('bayrell-runtime-nodejs').CoreEvent;
+var CoreStruct = require('bayrell-runtime-nodejs').CoreStruct;
+var Emitter = require('bayrell-runtime-nodejs').Emitter;
+var Reference = require('bayrell-runtime-nodejs').Reference;
+var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
+var AnnotationEvent = require('./Annotations/AnnotationEvent.js');
+var CoreManager = require('./Render/CoreManager.js');
+class UIEvent extends CoreStruct{
 	/* ======================= Class Init Functions ======================= */
-	getClassName(){return "Core.Http.JsonResponse";}
-	static getCurrentNamespace(){return "Core.Http";}
-	static getCurrentClassName(){return "Core.Http.JsonResponse";}
-	static getParentClassName(){return "Core.Http.Response";}
+	getClassName(){return "Core.UI.UIEvent";}
+	static getCurrentNamespace(){return "Core.UI";}
+	static getCurrentClassName(){return "Core.UI.UIEvent";}
+	static getParentClassName(){return "Runtime.CoreStruct";}
 	_init(){
 		super._init();
 		var names = Object.getOwnPropertyNames(this);
-		this.__data = new Dict();
-		if (names.indexOf("data") == -1)Object.defineProperty(this, "data", { get: function() { return this.__data; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("data") }});
+		this.ref = null;
+		this.annotation = null;
+		this.event = null;
+		this.ui = null;
 	}
 	assignObject(obj){
-		if (obj instanceof JsonResponse){
-			this.__data = obj.__data;
+		if (obj instanceof UIEvent){
 		}
 		super.assignObject(obj);
 	}
 	assignValue(variable_name, value, sender){if(sender==undefined)sender=null;
-		if (variable_name == "data")this.__data = rtl.convert(value,"Runtime.Dict",new Dict(),"primitive");
+		if (variable_name == "ref")this.ref = rtl.convert(value,"Runtime.Reference",null,"");
+		else if (variable_name == "annotation")this.annotation = rtl.convert(value,"Core.UI.Annotations.AnnotationEvent",null,"");
+		else if (variable_name == "event")this.event = rtl.convert(value,"Runtime.CoreEvent",null,"");
+		else if (variable_name == "ui")this.ui = rtl.convert(value,"Runtime.UIStruct",null,"");
 		else super.assignValue(variable_name, value, sender);
 	}
 	takeValue(variable_name, default_value){
 		if (default_value == undefined) default_value = null;
-		if (variable_name == "data") return this.__data;
+		if (variable_name == "ref") return this.ref;
+		else if (variable_name == "annotation") return this.annotation;
+		else if (variable_name == "event") return this.event;
+		else if (variable_name == "ui") return this.ui;
 		return super.takeValue(variable_name, default_value);
 	}
 	static getFieldsList(names, flag){
 		if (flag==undefined)flag=0;
-		if ((flag | 3)==3){
-			names.push("data");
+		if ((flag | 2)==2){
+			names.push("ref");
+			names.push("annotation");
+			names.push("event");
+			names.push("ui");
 		}
 	}
 	static getFieldInfoByName(field_name){
@@ -87,4 +83,4 @@ class JsonResponse extends Response{
 		return null;
 	}
 }
-module.exports = JsonResponse;
+module.exports = UIEvent;

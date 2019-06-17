@@ -24,12 +24,36 @@ var Vector = require('bayrell-runtime-nodejs').Vector;
 var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
-class FrontendInterface{
-	/**
-	 * Returns module name
-	 * @return string
-	 */
-	static getName(){
+var MouseEvent = require('./MouseEvent.js');
+class MouseEnterEvent extends MouseEvent{
+	/* ======================= Class Init Functions ======================= */
+	getClassName(){return "Core.UI.Events.MouseEvent.MouseEnterEvent";}
+	static getCurrentNamespace(){return "Core.UI.Events.MouseEvent";}
+	static getCurrentClassName(){return "Core.UI.Events.MouseEvent.MouseEnterEvent";}
+	static getParentClassName(){return "Core.UI.Events.MouseEvent.MouseEvent";}
+	assignObject(obj){
+		if (obj instanceof MouseEnterEvent){
+		}
+		super.assignObject(obj);
+	}
+	assignValue(variable_name, value, sender){if(sender==undefined)sender=null;
+		super.assignValue(variable_name, value, sender);
+	}
+	takeValue(variable_name, default_value){
+		if (default_value == undefined) default_value = null;
+		return super.takeValue(variable_name, default_value);
+	}
+	static getFieldsList(names, flag){
+		if (flag==undefined)flag=0;
+	}
+	static getFieldInfoByName(field_name){
+		return null;
+	}
+	static getMethodsList(names){
+	}
+	static getMethodInfoByName(method_name){
+		return null;
 	}
 }
-module.exports = FrontendInterface;
+MouseEnterEvent.ES6_EVENT_NAME = "mouseenter";
+module.exports = MouseEnterEvent;

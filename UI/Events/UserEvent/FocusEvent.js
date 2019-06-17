@@ -24,12 +24,36 @@ var Vector = require('bayrell-runtime-nodejs').Vector;
 var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
-class FrontendInterface{
-	/**
-	 * Returns module name
-	 * @return string
-	 */
-	static getName(){
+var UserEvent = require('./UserEvent.js');
+class FocusEvent extends UserEvent{
+	/* ======================= Class Init Functions ======================= */
+	getClassName(){return "Core.UI.Events.UserEvent.FocusEvent";}
+	static getCurrentNamespace(){return "Core.UI.Events.UserEvent";}
+	static getCurrentClassName(){return "Core.UI.Events.UserEvent.FocusEvent";}
+	static getParentClassName(){return "Core.UI.Events.UserEvent.UserEvent";}
+	assignObject(obj){
+		if (obj instanceof FocusEvent){
+		}
+		super.assignObject(obj);
+	}
+	assignValue(variable_name, value, sender){if(sender==undefined)sender=null;
+		super.assignValue(variable_name, value, sender);
+	}
+	takeValue(variable_name, default_value){
+		if (default_value == undefined) default_value = null;
+		return super.takeValue(variable_name, default_value);
+	}
+	static getFieldsList(names, flag){
+		if (flag==undefined)flag=0;
+	}
+	static getFieldInfoByName(field_name){
+		return null;
+	}
+	static getMethodsList(names){
+	}
+	static getMethodInfoByName(method_name){
+		return null;
 	}
 }
-module.exports = FrontendInterface;
+FocusEvent.ES6_EVENT_NAME = "focus";
+module.exports = FocusEvent;

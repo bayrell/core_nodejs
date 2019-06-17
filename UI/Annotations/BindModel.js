@@ -24,58 +24,67 @@ var Vector = require('bayrell-runtime-nodejs').Vector;
 var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
-var CoreObject = require('bayrell-runtime-nodejs').CoreObject;
-var RuntimeUtils = require('bayrell-runtime-nodejs').RuntimeUtils;
-var Request = require('./Request.js');
-var Response = require('./Response.js');
-class JsonResponse extends Response{
+var AnnotationEvent = require('./AnnotationEvent.js');
+var ModelChange = require('../Events/ModelChange.js');
+var ChangeEvent = require('../Events/UserEvent/ChangeEvent.js');
+class BindModel extends AnnotationEvent{
 	/**
-	 * Init struct data
+	 * OnEvent
 	 */
-	initData(){
-		var headers = this.headers;
-		if (headers == null){
-			headers = new Dict();
-		}
-		headers = headers.setIm("Content-Type", "application/json");
-		this.assignValue("headers", headers);
+	events(){
+		return (new Vector()).push("Core.UI.Events.ModelChange").push("Core.UI.Events.UserEvent.ChangeEvent");
 	}
 	/**
-	 * Returns content
+	 * OnEvent
 	 */
-	getContent(){
-		return rtl.json_encode(this.data);
+	static onEvent(manager, e){
+		if (e.event instanceof ChangeEvent){
+			var map = new Map();
+			map.set(e.annotation.model, e.event.value);
+			manager.updateModel(map);
+		}
+		if (e.event instanceof ModelChange){
+			var map = new Map();
+			map.set(e.annotation.model, e.event.model);
+			manager.updateModel(map);
+		}
+	}
+	/**
+	 * Add Emitter
+	 */
+	static addEmitter(manager, emitter, ui, annotation){
+		emitter.addMethod(this.onEventFactory(manager, ui, annotation), (new Vector()).push("Core.UI.Events.ModelChange").push("Core.UI.Events.UserEvent.ChangeEvent"));
 	}
 	/* ======================= Class Init Functions ======================= */
-	getClassName(){return "Core.Http.JsonResponse";}
-	static getCurrentNamespace(){return "Core.Http";}
-	static getCurrentClassName(){return "Core.Http.JsonResponse";}
-	static getParentClassName(){return "Core.Http.Response";}
+	getClassName(){return "Core.UI.Annotations.BindModel";}
+	static getCurrentNamespace(){return "Core.UI.Annotations";}
+	static getCurrentClassName(){return "Core.UI.Annotations.BindModel";}
+	static getParentClassName(){return "Core.UI.Annotations.AnnotationEvent";}
 	_init(){
 		super._init();
 		var names = Object.getOwnPropertyNames(this);
-		this.__data = new Dict();
-		if (names.indexOf("data") == -1)Object.defineProperty(this, "data", { get: function() { return this.__data; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("data") }});
+		this.__model = "";
+		if (names.indexOf("model") == -1)Object.defineProperty(this, "model", { get: function() { return this.__model; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("model") }});
 	}
 	assignObject(obj){
-		if (obj instanceof JsonResponse){
-			this.__data = obj.__data;
+		if (obj instanceof BindModel){
+			this.__model = obj.__model;
 		}
 		super.assignObject(obj);
 	}
 	assignValue(variable_name, value, sender){if(sender==undefined)sender=null;
-		if (variable_name == "data")this.__data = rtl.convert(value,"Runtime.Dict",new Dict(),"primitive");
+		if (variable_name == "model")this.__model = rtl.convert(value,"string","","");
 		else super.assignValue(variable_name, value, sender);
 	}
 	takeValue(variable_name, default_value){
 		if (default_value == undefined) default_value = null;
-		if (variable_name == "data") return this.__data;
+		if (variable_name == "model") return this.__model;
 		return super.takeValue(variable_name, default_value);
 	}
 	static getFieldsList(names, flag){
 		if (flag==undefined)flag=0;
 		if ((flag | 3)==3){
-			names.push("data");
+			names.push("model");
 		}
 	}
 	static getFieldInfoByName(field_name){
@@ -87,4 +96,4 @@ class JsonResponse extends Response{
 		return null;
 	}
 }
-module.exports = JsonResponse;
+module.exports = BindModel;

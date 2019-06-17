@@ -25,58 +25,58 @@ var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
 var CoreObject = require('bayrell-runtime-nodejs').CoreObject;
-var RuntimeUtils = require('bayrell-runtime-nodejs').RuntimeUtils;
-var Request = require('./Request.js');
-var Response = require('./Response.js');
-class JsonResponse extends Response{
+var RoutesInterface = require('../../Interfaces/RoutesInterface.js');
+var WebContainer = require('./WebContainer.js');
+class CoreRoute extends CoreObject{
 	/**
-	 * Init struct data
+	 * Before call method
 	 */
-	initData(){
-		var headers = this.headers;
-		if (headers == null){
-			headers = new Dict();
+	static before(container, name){
+		return (async_ctx_0) => {
+			var async_jump_0 = async_ctx_0.current();
+			if (async_jump_0 == "0"){
+				return async_ctx_0.resolve(container);
+			}
+			else if (async_jump_0 == "-1"){
+				return async_ctx_0.error( async_ctx_0.getError() )
+			}
+			else{
+				return async_ctx_0.next();
+			}
+			return async_ctx_0.end();
 		}
-		headers = headers.setIm("Content-Type", "application/json");
-		this.assignValue("headers", headers);
 	}
 	/**
-	 * Returns content
+	 * Before call method
 	 */
-	getContent(){
-		return rtl.json_encode(this.data);
+	static after(container, name){
+		return (async_ctx_0) => {
+			var async_jump_0 = async_ctx_0.current();
+			if (async_jump_0 == "0"){
+				return async_ctx_0.resolve(container);
+			}
+			else if (async_jump_0 == "-1"){
+				return async_ctx_0.error( async_ctx_0.getError() )
+			}
+			else{
+				return async_ctx_0.next();
+			}
+			return async_ctx_0.end();
+		}
 	}
 	/* ======================= Class Init Functions ======================= */
-	getClassName(){return "Core.Http.JsonResponse";}
-	static getCurrentNamespace(){return "Core.Http";}
-	static getCurrentClassName(){return "Core.Http.JsonResponse";}
-	static getParentClassName(){return "Core.Http.Response";}
+	getClassName(){return "Core.UI.Render.CoreRoute";}
+	static getCurrentNamespace(){return "Core.UI.Render";}
+	static getCurrentClassName(){return "Core.UI.Render.CoreRoute";}
+	static getParentClassName(){return "Runtime.CoreObject";}
 	_init(){
 		super._init();
 		var names = Object.getOwnPropertyNames(this);
-		this.__data = new Dict();
-		if (names.indexOf("data") == -1)Object.defineProperty(this, "data", { get: function() { return this.__data; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("data") }});
-	}
-	assignObject(obj){
-		if (obj instanceof JsonResponse){
-			this.__data = obj.__data;
-		}
-		super.assignObject(obj);
-	}
-	assignValue(variable_name, value, sender){if(sender==undefined)sender=null;
-		if (variable_name == "data")this.__data = rtl.convert(value,"Runtime.Dict",new Dict(),"primitive");
-		else super.assignValue(variable_name, value, sender);
-	}
-	takeValue(variable_name, default_value){
-		if (default_value == undefined) default_value = null;
-		if (variable_name == "data") return this.__data;
-		return super.takeValue(variable_name, default_value);
+		if (this.__implements__ == undefined){this.__implements__ = [];}
+		this.__implements__.push(RoutesInterface);
 	}
 	static getFieldsList(names, flag){
 		if (flag==undefined)flag=0;
-		if ((flag | 3)==3){
-			names.push("data");
-		}
 	}
 	static getFieldInfoByName(field_name){
 		return null;
@@ -87,4 +87,6 @@ class JsonResponse extends Response{
 		return null;
 	}
 }
-module.exports = JsonResponse;
+CoreRoute.__static_implements__ = [];
+CoreRoute.__static_implements__.push(RoutesInterface)
+module.exports = CoreRoute;

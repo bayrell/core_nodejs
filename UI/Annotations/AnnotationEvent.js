@@ -24,59 +24,64 @@ var Vector = require('bayrell-runtime-nodejs').Vector;
 var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
-var CoreObject = require('bayrell-runtime-nodejs').CoreObject;
-var RuntimeUtils = require('bayrell-runtime-nodejs').RuntimeUtils;
-var Request = require('./Request.js');
-var Response = require('./Response.js');
-class JsonResponse extends Response{
+var ContextInterface = require('bayrell-runtime-nodejs').Interfaces.ContextInterface;
+var CoreStruct = require('bayrell-runtime-nodejs').CoreStruct;
+var CoreManager = require('../Render/CoreManager.js');
+var UIController = require('../UIController.js');
+var UIEvent = require('../UIEvent.js');
+class AnnotationEvent extends CoreStruct{
 	/**
-	 * Init struct data
+	 * OnEvent
 	 */
-	initData(){
-		var headers = this.headers;
-		if (headers == null){
-			headers = new Dict();
-		}
-		headers = headers.setIm("Content-Type", "application/json");
-		this.assignValue("headers", headers);
+	events(){
+		return (new Vector());
 	}
 	/**
-	 * Returns content
+	 * OnEvent
 	 */
-	getContent(){
-		return rtl.json_encode(this.data);
+	static onEvent(manager, e){
+	}
+	/**
+	 * Factory onEvent
+	 */
+	static onEventFactory(manager, ui, annotation){
+		return (event) => {
+			var ui_event = new UIEvent((new Map()).set("annotation", annotation).set("event", event).set("ui", ui));
+			this.onEvent(manager, ui_event);
+		}
+	}
+	/**
+	 * Add Emitter
+	 */
+	static addEmitter(manager, emitter, ui, annotation){
+	}
+	/**
+	 * Dispatch Event
+	 */
+	static dispatch(manager, ui, annotation, event, ref){
+		if (ref == undefined) ref=null;
+		var ui_event = new UIEvent((new Map()).set("annotation", annotation).set("event", event).set("ref", ref).set("ui", ui));
+		this.onEvent(manager, ui_event);
 	}
 	/* ======================= Class Init Functions ======================= */
-	getClassName(){return "Core.Http.JsonResponse";}
-	static getCurrentNamespace(){return "Core.Http";}
-	static getCurrentClassName(){return "Core.Http.JsonResponse";}
-	static getParentClassName(){return "Core.Http.Response";}
-	_init(){
-		super._init();
-		var names = Object.getOwnPropertyNames(this);
-		this.__data = new Dict();
-		if (names.indexOf("data") == -1)Object.defineProperty(this, "data", { get: function() { return this.__data; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("data") }});
-	}
+	getClassName(){return "Core.UI.Annotations.AnnotationEvent";}
+	static getCurrentNamespace(){return "Core.UI.Annotations";}
+	static getCurrentClassName(){return "Core.UI.Annotations.AnnotationEvent";}
+	static getParentClassName(){return "Runtime.CoreStruct";}
 	assignObject(obj){
-		if (obj instanceof JsonResponse){
-			this.__data = obj.__data;
+		if (obj instanceof AnnotationEvent){
 		}
 		super.assignObject(obj);
 	}
 	assignValue(variable_name, value, sender){if(sender==undefined)sender=null;
-		if (variable_name == "data")this.__data = rtl.convert(value,"Runtime.Dict",new Dict(),"primitive");
-		else super.assignValue(variable_name, value, sender);
+		super.assignValue(variable_name, value, sender);
 	}
 	takeValue(variable_name, default_value){
 		if (default_value == undefined) default_value = null;
-		if (variable_name == "data") return this.__data;
 		return super.takeValue(variable_name, default_value);
 	}
 	static getFieldsList(names, flag){
 		if (flag==undefined)flag=0;
-		if ((flag | 3)==3){
-			names.push("data");
-		}
 	}
 	static getFieldInfoByName(field_name){
 		return null;
@@ -87,4 +92,4 @@ class JsonResponse extends Response{
 		return null;
 	}
 }
-module.exports = JsonResponse;
+module.exports = AnnotationEvent;

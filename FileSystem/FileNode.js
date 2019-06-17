@@ -24,58 +24,53 @@ var Vector = require('bayrell-runtime-nodejs').Vector;
 var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
-var CoreObject = require('bayrell-runtime-nodejs').CoreObject;
-var RuntimeUtils = require('bayrell-runtime-nodejs').RuntimeUtils;
-var Request = require('./Request.js');
-var Response = require('./Response.js');
-class JsonResponse extends Response{
-	/**
-	 * Init struct data
-	 */
-	initData(){
-		var headers = this.headers;
-		if (headers == null){
-			headers = new Dict();
-		}
-		headers = headers.setIm("Content-Type", "application/json");
-		this.assignValue("headers", headers);
-	}
-	/**
-	 * Returns content
-	 */
-	getContent(){
-		return rtl.json_encode(this.data);
-	}
+var CoreStruct = require('bayrell-runtime-nodejs').CoreStruct;
+class FileNode extends CoreStruct{
 	/* ======================= Class Init Functions ======================= */
-	getClassName(){return "Core.Http.JsonResponse";}
-	static getCurrentNamespace(){return "Core.Http";}
-	static getCurrentClassName(){return "Core.Http.JsonResponse";}
-	static getParentClassName(){return "Core.Http.Response";}
+	getClassName(){return "Core.FileSystem.FileNode";}
+	static getCurrentNamespace(){return "Core.FileSystem";}
+	static getCurrentClassName(){return "Core.FileSystem.FileNode";}
+	static getParentClassName(){return "Runtime.CoreStruct";}
 	_init(){
 		super._init();
 		var names = Object.getOwnPropertyNames(this);
-		this.__data = new Dict();
-		if (names.indexOf("data") == -1)Object.defineProperty(this, "data", { get: function() { return this.__data; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("data") }});
+		this.KIND_FOLDER = "folder";
+		this.KIND_SYMLINK = "symlink";
+		this.KIND_FILE = "file";
+		this.__name = "";
+		if (names.indexOf("name") == -1)Object.defineProperty(this, "name", { get: function() { return this.__name; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("name") }});
+		this.__kind = "";
+		if (names.indexOf("kind") == -1)Object.defineProperty(this, "kind", { get: function() { return this.__kind; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("kind") }});
+		this.__items = null;
+		if (names.indexOf("items") == -1)Object.defineProperty(this, "items", { get: function() { return this.__items; }, set: function(value) { throw new Runtime.Exceptions.AssignStructValueError("items") }});
 	}
 	assignObject(obj){
-		if (obj instanceof JsonResponse){
-			this.__data = obj.__data;
+		if (obj instanceof FileNode){
+			this.__name = obj.__name;
+			this.__kind = obj.__kind;
+			this.__items = obj.__items;
 		}
 		super.assignObject(obj);
 	}
 	assignValue(variable_name, value, sender){if(sender==undefined)sender=null;
-		if (variable_name == "data")this.__data = rtl.convert(value,"Runtime.Dict",new Dict(),"primitive");
+		if (variable_name == "name")this.__name = rtl.convert(value,"string","","");
+		else if (variable_name == "kind")this.__kind = rtl.convert(value,"string","","");
+		else if (variable_name == "items")this.__items = rtl.convert(value,"Runtime.Collection",null,"Core.FileSystem.FileNode");
 		else super.assignValue(variable_name, value, sender);
 	}
 	takeValue(variable_name, default_value){
 		if (default_value == undefined) default_value = null;
-		if (variable_name == "data") return this.__data;
+		if (variable_name == "name") return this.__name;
+		else if (variable_name == "kind") return this.__kind;
+		else if (variable_name == "items") return this.__items;
 		return super.takeValue(variable_name, default_value);
 	}
 	static getFieldsList(names, flag){
 		if (flag==undefined)flag=0;
 		if ((flag | 3)==3){
-			names.push("data");
+			names.push("name");
+			names.push("kind");
+			names.push("items");
 		}
 	}
 	static getFieldInfoByName(field_name){
@@ -87,4 +82,7 @@ class JsonResponse extends Response{
 		return null;
 	}
 }
-module.exports = JsonResponse;
+FileNode.KIND_FOLDER = "folder";
+FileNode.KIND_SYMLINK = "symlink";
+FileNode.KIND_FILE = "file";
+module.exports = FileNode;

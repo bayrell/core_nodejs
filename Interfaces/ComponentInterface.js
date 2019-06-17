@@ -2,7 +2,7 @@
 /*!
  *  Bayrell Core Library
  *
- *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2018-2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ var Collection = require('bayrell-runtime-nodejs').Collection;
 var IntrospectionInfo = require('bayrell-runtime-nodejs').IntrospectionInfo;
 var UIStruct = require('bayrell-runtime-nodejs').UIStruct;
 var RenderContainer = require('../UI/Render/RenderContainer.js');
-class AssetsInterface{
+class ComponentInterface{
 	/**
 	 * Returns module name
 	 * @return string
@@ -45,6 +45,21 @@ class AssetsInterface{
 	static getModuleFiles(){
 	}
 	/**
+	 * Returns manager name
+	 */
+	static componentManagerName(){
+	}
+	/**
+	 * Returns model name
+	 */
+	static componentModelName(){
+	}
+	/**
+	 * Returns model name
+	 */
+	static componentViewName(){
+	}
+	/**
 	 * Returns required assets
 	 * @return Collection<string>
 	 */
@@ -61,4 +76,4 @@ class AssetsInterface{
 	static initContainer(container){
 	}
 }
-module.exports = AssetsInterface;
+module.exports = ComponentInterface;
